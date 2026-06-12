@@ -1,0 +1,46 @@
+import pygame, random, math, sys
+pygame.init()
+W, H = 800, 800
+screen = pygame.display.set_mode((W, H))
+C = pygame.time.Clock()
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+class Star:
+def __init__(self):
+# Inicializa una estrella en una posición aleatoria (coordenadas polares)
+self.r = random.uniform(0, W/2) # Radio (distancia al centro)
+self.a = random.uniform(0, 2*math.pi) # Ángulo
+self.rs = random.uniform(0.002, 0.006) # Tasa de cambio de radio (velocidad)
+self.ar = random.uniform(0.002, 0.006) # Tasa de cambio de ángulo (rotación)
+self.sz = random.randint(1, 2) # Tamaño
+def move(self):
+# Mueve la estrella, aumentando su radio y ángulo
+self.r += self.rs
+self.a += self.ar
+# Si la estrella sale del límite de la pantalla, la reinicia al centro
+if self.r > W/2:
+self.r = 0
+self.a = random.uniform(0, 2*math.pi)
+def draw(self):
+# Convierte las coordenadas polares (r, a) a cartesianas (x, y)
+x = W/2 + math.cos(self.a) * self.r
+y = H/2 + math.sin(self.a) * self.r
+# Dibuja la estrella como un círculo blanco
+pygame.draw.circle(screen, WHITE, (int(x), int(y)), self.sz)
+# Crea una lista de 500 objetos Star
+Stars = [Star() for e in range(500)]
+while True:
+for e in pygame.event.get():
+if e.type == pygame.QUIT:
+pygame.quit()
+sys.exit()
+# Pinta el fondo de negro
+screen.fill(BLACK)
+# Itera sobre todas las estrellas para moverlas y dibujarlas
+for e in Stars:
+e.move()
+e.draw()
+# Actualiza la pantalla
+pygame.display.flip()
+# Limita la velocidad de fotogramas a 60 FPS
+C.tick(60)
